@@ -1,0 +1,88 @@
+body {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    font-family: "Lilita", sans-serif;
+    overflow-x:hidden;
+    background-color: #001a23
+}
+
+.game-container {
+
+    margin-top: 25%;
+    width: 520px;
+    height: 520px;
+    display: flex;
+    flex-direction: column;
+
+    
+}
+
+.row {
+    display: flex;
+    flex: 1;
+}
+
+.grid-square {
+    display: flex;
+    border-top: 5px solid #3c6850;
+    border-right: 5px solid #3c6850;
+    justify-content: center;
+    align-items: center;
+    width: calc(100% / 3);
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    transition: background-color 0.2s ease-in;
+}
+
+.grid-square span {
+    opacity: 0;
+    font-size: 4rem;
+    color: #E8F1F2;
+    transition: opacity 1s ease-in;
+}
+
+.grid-square:hover {
+    background-color: #021c24;
+    cursor: pointer;
+}
+
+
+
+.grid-square:last-child {
+    border-right: none;
+}
+.row:first-child .grid-square{
+    border-top: none;
+}
+
+
+dialog {
+    padding: 5rem 10rem;
+    
+}
+
+.names-container {
+    display: flex;
+    border: 1px solid black;
+    background-color: #0f576d;
+    min-width: 100vw;
+    padding: 50px;
+    margin-top: 0;
+    justify-content: space-around;
+    color: white;
+}
+
+.name {
+    list-style: none;
+    font-size: 3rem;
+}
+
+.current-player {
+    padding: 10px;
+    border: 3px solid purple;
+}

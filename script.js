@@ -1,42 +1,59 @@
-const displayController = (function() {
+const container = document.querySelector(".game-container");
+const dialog = document.querySelector("dialog");
+const players = document.querySelectorAll(".name");
+Player = (name, moveType="O") => {
 
-})();
+    return {
+        name: name,
+        moveType: moveType,
+        move: null
+    }
+}
 const gameboardController = (function() {
     const gameboard = [
         [0,0,0], 
         [0,0,0], 
         [0,0,0]
     ];
+    const playerOne = Player("John", "X");
+    const playerTwo = Player("Joe", "O");
+    const boardSize = 3;
+    let activePlayer = playerOne;
+    let gameState = "not active";
     const playerMove = (player) => {
-        if (gameboardController.activePlayer === player.name) {
-            if (validateMove(player.getMove)) {
-                const [xCord, yCord] = player.getMove;
-                gameboardController.gameboard[xCord][yCord] = player.moveType;
-                if (!isWinner(player))
-                    return changeTurn();
-                else {
-                    displayWinScreen(player)
-                }
-                
+        if (activePlayer === player) {
+            if (validateMove(player.move)) {
+                const [xCord, yCord] = player.move;
+                gameboard[xCord][yCord] = activePlayer.moveType; 
+                return true;
             }
+            console.log("not validated");
             return false;
         }
+        console.log("not active");
         return false;
     }
     const validateMove = (move) => {
         let [xCord, yCord] = move;
-        if ((xCord > 2 && xCord > 2) || (board[xCord][yCord] !== `0`)) return false;
+        if ((xCord > 2 && xCord > 2) || (gameboard[xCord][yCord] !== 0)) return false;
         return true;
     }
     const changeTurn = () => {
-        if (gameboardController.activePlayer === playerOne.name) gameboardController.activePlayer = playerTwo.name;
-        else gameboardController.activePlayer = playerOne.name;
+        if (activePlayer === playerOne) {
+            activePlayer = playerTwo;
+            players[0].classList.remove("current-player");
+            players[1].classList.add("current-player");
+        }
+        else {
+            activePlayer = playerOne;
+            players[1].classList.remove("current-player");
+            players[0].classList.add("current-player");
+        }
     }
 
-    const isWinner = (player) => {
-        const marker = player.moveType;
-        const board = gameboardController.gameboard;
-        console.log("hello from iswinner");
+    const isWinner = () => {
+        const marker = activePlayer.moveType;
+        const board = gameboard;
     
         //  row
         for (let i = 0; i < board.length; i++) {
@@ -62,7 +79,7 @@ const gameboardController = (function() {
             }
         }
     
-        // diagonal
+        // diagonals
         let counter = 0;
         for (let i = 0; i < board.length; i++) {
             if (board[i][i] === marker) counter++;
@@ -80,67 +97,107 @@ const gameboardController = (function() {
             console.log("hello from diag");
             return true;
         }
-    
         return false;
     }
+
+    const isFull = () => { return !gameboard.flat().includes(0); }
+
     const displayWinScreen = (player) => {
-        console.log(`${player.name} wins!`)
+        dialog.innerHTML =`<p>${activePlayer.name} Wins!</p>`;
+        dialog.showModal();
+        console.log("win")
+    }
+    const playGame = () => {
+        container.addEventListener("click", (event) => {
+            const winText = document.querySelector("dialog p")
+           if (event.target.classList.contains("grid-square")) {
+                const row = Number(event.target.parentNode.classList[1]);
+                const col = Number(event.target.classList[1]);
+                activePlayer.move = [row, col];
+                
+                if (playerMove(activePlayer)) {
+                    const gridSquareSpan = document.createElement("span");
+                    gridSquareSpan.style.opacity = 1;
+                    gridSquareSpan.innerText = activePlayer.moveType;
+                    event.target.appendChild(gridSquareSpan);
+                    if(isWinner()) {
+                        gameboardController.gameState = "won";
+                        console.log("inside iswinner");
+                        winText.innerText =`${activePlayer.name} Wins!`;
+                        dialog.showModal();
+                        return;
+                    } else if(isFull()) {
+                        winText.innerText = "It is a Draw!";
+                        dialog.showModal();
+                        return;
+                    }
+                    
+                    console.log(gameboardController.gameboard);
+                    changeTurn();
+                }
+           }
+        });
     }
     return {
-        playerMove: playerMove,
-        validateMove: validateMove, 
-        isWinner: isWinner,
-        displayWinScreen: displayWinScreen,
+        playGame: playGame,
+        boardSize: boardSize,
         gameboard: gameboard,
         activePlayer: null
     }
 })();
 
-const displayUpdate =
-
-
-createPlayer = (name, moveType="O") => {
-
-    return {
-        name: name,
-        moveType: moveType,
-        getMove: null
-    }
-}
-function resetBoard() {
+function initializeBoard() {
     gameboardController.gameboard = 
     [[0,0,0], 
     [0,0,0], 
     [0,0,0]];
     gameboardController.activePlayer = null;
+        for (let i = 0; i < gameboardController.boardSize; i++) {
+            const row = document.createElement("div");
+            row.classList.add("row");
+            row.classList.add(i);
+            container.appendChild(row);
+            for (let j = 0; j < gameboardController.boardSize; j++) {
+                const gridSquare = document.createElement("div");
+                gridSquare.classList.add("grid-square");
+                gridSquare.classList.add(j);
+                row.appendChild(gridSquare);
+            }
+        }
+    gameboardController.gameState = "ongoing";
 }
-resetBoard();
-const playerOne = createPlayer("John", "X");
-const playerTwo = createPlayer("Joe", "O");
-gameboardController.activePlayer = playerOne.name;
+
+function resetBoard() {
+    gameboardController.gameboard =  gameboardController.gameboard = 
+    [[0,0,0], 
+    [0,0,0], 
+    [0,0,0]];
+}
+initializeBoard();
+gameboardController.playGame();
 
 
 
 
 
 /*
-playerOne.getMove = [1, 0];
+playerOne.move = [1, 0];
 gameboardController.playerMove(playerOne);
 console.log(gameboardController.gameboard);
 console.log(gameboardController.activePlayer);
-playerTwo.getMove = [0, 1];
+playerTwo.move = [0, 1];
 gameboardController.playerMove(playerTwo);
 console.log(gameboardController.gameboard);
 console.log(gameboardController.activePlayer);
-playerOne.getMove = [1, 1];
+playerOne.move = [1, 1];
 gameboardController.playerMove(playerOne);
 console.log(gameboardController.gameboard);
 console.log(gameboardController.activePlayer);
-playerTwo.getMove = [0, 2];
+playerTwo.move = [0, 2];
 gameboardController.playerMove(playerTwo);
 console.log(gameboardController.gameboard);
 console.log(gameboardController.activePlayer);
-playerOne.getMove = [1, 2];
+playerOne.move = [1, 2];
 gameboardController.playerMove(playerOne);
 console.log(gameboardController.gameboard);
 console.log(gameboardController.activePlayer);

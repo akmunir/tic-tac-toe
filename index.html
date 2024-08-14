@@ -3,12 +3,27 @@
     <head>
         <title>Tic Tac Toe</title>
         <meta charset="UTF-8">
-        <script src="script.js"></script>
+        <script src="script.js" defer></script>
         <link rel="stylesheet" type="text/css" href="styles.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Foldit:wght@100..900&family=Lilita+One&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     </head>
-    <body>
-        <div class="game-board-container">
+    <body> 
+        <header>
+            <ul class="names-container">
+                <li class="name current-player">Player One <span>X</span></li>
+                <li class="name">Player Two <span>O</span</li>
+            </ul>
+        </header>
+        <main>
+             <div class="game-container">
             
-        </div>
+            </div>
+        </main>
+       <dialog>
+        <p></p>
+        <button class="reset">Play Again?</button>
+       </dialog>
     </body>
 </html>
